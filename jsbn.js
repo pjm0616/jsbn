@@ -997,6 +997,26 @@ function bnTestBit(n) {
     return ((this[j] & (1 << (n % this.DB))) != 0);
 }
 
+//(public) extract bits into an array, least significant bits first
+function bnToBitArrayLE() {
+    var result = [];
+    var i = 0;
+    var cnt = this.t - 1;
+    for (; i < cnt; i++) {
+        var val = this[i];
+        for (var j = 0; j < this.DB; j++) {
+            result.push(val & 1);
+            val >>>= 1;
+        }
+    }
+    var val = this[i] || 0;
+    for (var j = 0; j < this.DB && val; j++) {
+        result.push(val & 1);
+        val >>>= 1;
+    }
+    return result;
+}
+
 //(protected) this op (1<<n)
 function bnpChangeBit(n, op) {
     var r = BigInteger.ONE.shiftLeft(n);
@@ -1505,6 +1525,7 @@ BigInteger.prototype.shiftRight = bnShiftRight;
 BigInteger.prototype.getLowestSetBit = bnGetLowestSetBit;
 BigInteger.prototype.bitCount = bnBitCount;
 BigInteger.prototype.testBit = bnTestBit;
+BigInteger.prototype.toBitArrayLE = bnToBitArrayLE;
 BigInteger.prototype.setBit = bnSetBit;
 BigInteger.prototype.clearBit = bnClearBit;
 BigInteger.prototype.flipBit = bnFlipBit;
